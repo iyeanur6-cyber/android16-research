@@ -1,4 +1,4 @@
-name: Android Security Decompiler Lab
+name: Android Security Research Decompiler
 on: [push]
 jobs:
   decompile-research:
@@ -6,26 +6,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Build Tools and Decompiler
-        run: |
-          sudo apt update
-          sudo apt install -y build-essential binutils
-          # Installing a lightweight decompiler like 'RetDec' or similar
-          sudo snap install retdec --edge
+      - name: Install Analysis Tools
+        run: sudo apt update && sudo apt install -y build-essential binutils
 
       - name: Compile Target Binary
         run: gcc x.c -o target_binary
 
-      - name: Decompile Binary to C
+      - name: Generate Detailed Logic Analysis
         run: |
-          retdec-decompiler target_binary
-          # This generates target_binary.c as pseudo-code
+          # Detailed Disassembly with source-line intermix (if available)
+          objdump -d -M intel -S target_binary > full_logic_analysis.txt
+          # Extracting only the main function logic
+          objdump -d target_binary | sed -n '/<main>:/,/^$/p' > main_function_decompiled.txt
 
-      - name: Upload Decompiled Source
+      - name: Archive Research Logs
         uses: actions/upload-artifact@v4
         with:
-          name: decompiled-logic-files
+          name: research-decompiled-files
           path: |
-            target_binary.c
-            target_binary.config.json
+            full_logic_analysis.txt
+            main_function_decompiled.txt
             
