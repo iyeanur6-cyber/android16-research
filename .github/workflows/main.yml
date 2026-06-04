@@ -1,23 +1,31 @@
-name: Android 16 Core Research Lab
+name: Android Security Decompiler Lab
 on: [push]
 jobs:
-  build-and-reverse:
+  decompile-research:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Install Compilers and Strace
-        run: sudo apt update && sudo apt install -y build-essential strace
-        
-      - name: Compile Security Code
-        run: gcc x.c -o x_binary
-        
-      - name: Execute Disassembly
-        run: objdump -d x_binary > disassembly_output.txt
-        
-      - name: Archive Research Logs
+
+      - name: Install Build Tools and Decompiler
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential binutils
+          # Installing a lightweight decompiler like 'RetDec' or similar
+          sudo snap install retdec --edge
+
+      - name: Compile Target Binary
+        run: gcc x.c -o target_binary
+
+      - name: Decompile Binary to C
+        run: |
+          retdec-decompiler target_binary
+          # This generates target_binary.c as pseudo-code
+
+      - name: Upload Decompiled Source
         uses: actions/upload-artifact@v4
         with:
-          name: kernel-leak-logs
-          path: disassembly_output.txt
-          
+          name: decompiled-logic-files
+          path: |
+            target_binary.c
+            target_binary.config.json
+            
