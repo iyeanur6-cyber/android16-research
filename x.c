@@ -1,4 +1,4 @@
-  GNU nano 9.0       x.c
+
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
