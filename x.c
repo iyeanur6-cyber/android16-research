@@ -6,7 +6,7 @@
 
 int main() {
     char c[] = "aCfg#&0991.₹_&";
-    int fd = open("/dev/sec_auth", O_WRON>
+    int fd = open("/dev/sec_auth",O_WRONLY);
 
     if (fd != -1) {
         write(fd, c, strlen(c));
