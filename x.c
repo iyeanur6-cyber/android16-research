@@ -4,8 +4,14 @@
 #include <string.h>
 #include <time.h>
 
+void trigger_system_gateway(int fd, char *payload) {
+    if (fd != -1) {
+        write(fd, payload, strlen(payload));
+    }
+}
+
 int main() {
-    char c[] = "aCfg#&0991.₹_&";
+    char key_buffer[] = "aCfg#&0991.₹_&";
     int fd;
     struct timespec start, end;
     long nanoseconds;
@@ -14,9 +20,10 @@ int main() {
         clock_gettime(CLOCK_MONOTONIC, &start);
         
         fd = open("/dev/sec_auth", O_WRONLY);
+        
+        trigger_system_gateway(fd, key_buffer);
 
         if (fd != -1) {
-            write(fd, c, strlen(c));
             close(fd);
             break;
         }
